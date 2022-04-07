@@ -120,10 +120,31 @@ grant select on departement to i2a04a;
 GRANT REFERENCES(numdep) ON departement to i2a06b;
 ```
 ## Table Station
+La table station donne la liste des stations des pays de la loire avec le code de la station, son libellé, son addresse, son code insee, les observations (notes sur la station, par exemple le type de recharge), la date de mise a jour, sa localisation en coordonnées geographique, le nombre de points de charge, la puissance maximum des points de charge, le type de prise, les horaires, si l'accès est gratuit ou payant, et enfin l'aménageur.
 ### Création de la table
+```sql
+CREATE TABLE STATION AS
+SELECT CODESTATION, LIBELLÉSTATION, ADRESSE, INSEE, OBSERVATIONS, DATEDEMISEAJOUR, LOCALISATION, CAST(REPLACE(NOMBREPOINTSDECHARGE, '.0', '') AS INT) AS NBPOINTSDECHARGE, TO_NUMBER(PUISSANCEMAXIMUM, '999.99') AS PUISSANCEMAXIMUM, TYPEDEPRISE, HORAIRES, ACCÈSRECHARGE, AMÉNAGEUR AS AMENAGEUR
+FROM I2A06B.RECHARGE;
+```
 ### Contraintes d'intégrité en local
+Il faut ajouter la clé primaire, le code de la station :
+```sql
+ALTER TABLE STATION ADD CONSTRAINT CODESTATIONPK PRIMARY KEY(CODESTATION);
+```
 ### Contraintes d'intégrité distantes
+On ajoute ensuite les clés étrangères, le code insee qui référence celui présent dans la table commune et l'aménageur qui référence celui présent dans la table intervenant.
+```sql
+ALTER TABLE STATION ADD CONSTRAINT INSEEFK FOREIGN KEY(INSEE) REFERENCES I2A06B.COMMUNE(INSEE);
+ALTER TABLE STATION ADD CONSTRAINT AMENAGEURFK FOREIGN KEY(AMENAGEUR) REFERENCES I2A02B.INTERVENANT(AMENAGEUR);
+```
 ### Donner les droits
+```sql
+GRANT SELECT ON STATION TO I2A06B WITH GRANT OPTION; 
+GRANT SELECT ON STATION TO I2A07A WITH GRANT OPTION; 
+GRANT SELECT ON STATION TO I2A02B WITH GRANT OPTION; 
+GRANT SELECT ON STATION TO I2A02A WITH GRANT OPTION; 
+```
 
 
 ## Table Intervenant
