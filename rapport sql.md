@@ -4,17 +4,19 @@
 Recharge correspond à une table temporaire dans laquelle les erreurs sont corrigées. Au lieu de créer des nouvelles tables à partir de basetd rechargeelectrique on le fait à partir de Recharge pour ne pas copier les erreurs. 
 
 ### Création de la table
+Pour créer cette table, on prend tout le contenu de basetd rechargeelectrique.
 ```sql
 create table recharge as select * from basetd.rechargeelectrique; 
 ```
 ### Correction des erreurs
+La table recharge possède plusieurs erreurs. 
+Avec ces requêtes, on corrige :
 
+- les doublons de communes (deux possèdent le code insee 85234 et deux autres 85223)
+- des stations situées en Vendée alors qu'elles sont inscrites à la Réunion dans recharge
+- une station située en Gironde alors qu'elle devrait être en Loire-Atlantique
+- l'écriture des horaires inconsistante 
 ```sql
-/* deux communes ont le code insee 85234 et deux autres le code insee 85223 */
-select commune, adresse, insee from recharge where insee in ('85234.0', '85223.0');
-
-select * from recharge where département = 'La Réunion';
-
 UPDATE recharge 
 SET
     commune = 'Sainte-Hermine'
@@ -52,6 +54,7 @@ SET
 ```
 
 ### Donner les droits
+Pour que les utilisateurs créent les autres tables, il faut leur donner le droit de sélectionner la table recharge.
 ```sql
 grant select on recharge to i2a07a;
 grant select on recharge to i2a02b;
@@ -59,34 +62,38 @@ grant select on recharge to i2a02a;
 grant select on recharge to i2a04a;
 ```
 ## Table Commune
-
+La table commune possède toutes les communes dans les Pays de la Loire avec leur code insee, le nom de commune et le numéro de leur département.
 ### Création de la table
 ```sql
 create table commune as
 select distinct insee, commune as nomcommune, code_dep as numdep from recharge;
 ```
 ### Contraintes d'intégrité en local
+La seule contrainte d'intégrité sur commune en local est la clé primaire, le code insee.
 ```sql
 alter table commune add constraint Commune_PK primary key (insee);
 ```
 
 ### Contraintes d'intégrité distantes
+L'attribut numdep de la table commune doit faire référence à la clé primaire de la table departement. Il est nécessaire d'obtenir l'autorisation de référencer cet attribut avant d'ajouter la contrainte (voir les droits donnés lors de la création de la table département). 
 ```sql
 alter table commune add constraint Commune_FK foreign key (numdep) references departement(numdep);
 ```
 ### Donner les droits
+On donne les droits de sélectionner la table commune aux autres utilisateurs. Le "with grant option" leur permet de donner le droit de sélectionner sur des vues qu'ils ont créé à partir de la table commune. 
 
+On donne également le droit de référencer l'attribut insee au possesseur de la table Station.
 ```sql
-grant select on commune to i2a07a;
-grant select on commune to i2a02b;
-grant select on commune to i2a02a;
-grant select on commune to i2a04a;
+grant select on commune to i2a07a with grant option;
+grant select on commune to i2a02b with grant option;
+grant select on commune to i2a02a with grant option;
+grant select on commune to i2a04a with grant option;
 
 GRANT REFERENCES(insee) ON commune to i2a04a;
 ```
 
 ## Table Département
-
+La table departement donne la liste des départements dans les Pays de la Loire avec le code de département et le nom de département. 
 ### Création de la table
 ```sql
 create table departement as
@@ -94,6 +101,7 @@ select distinct code_dep as numdep, département as nomdep from i2a06b.recharge;
 ```
 
 ### Contraintes d'intégrité en local
+La seule contrainte d'intégrité en local à ajouter est la clé primaire, le code de département. 
 ```sql
 alter table departement add constraint Departement_PK primary key (numdep);
 ```
@@ -108,7 +116,15 @@ grant select on departement to i2a04a;
 
 GRANT REFERENCES(numdep) ON departement to i2a06b;
 ```
+## Table Station
+### Création de la table
+### Contraintes d'intégrité en local
+### Donner les droits
 
+## Table Intervenant
+### Création de la table
+### Contraintes d'intégrité en local
+### Donner les droits
 
 ## Requêtes
 
