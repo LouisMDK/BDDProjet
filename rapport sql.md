@@ -1,4 +1,11 @@
 # Rapport mini projet SQL
+identifiants Oracle :
+
+- Louis : i2a06b
+- Julien : i2a07a
+- Martin : i2a02b
+- Léo : i2a02a
+- Emerik : i2a04a
 
 ## Table Recharge
 Recharge correspond à une table temporaire dans laquelle les erreurs sont corrigées. Au lieu de créer des nouvelles tables à partir de basetd rechargeelectrique on le fait à partir de Recharge pour ne pas copier les erreurs. 
@@ -253,6 +260,7 @@ order by 1;
 
 ## Synthèse 
 ### Créer les vues
+On créé les vues à partir des requêtes précedentes.
 ```sql
 /* Sarthe 72 i2a02a */
 create or replace view VSarthe as
@@ -292,19 +300,23 @@ group by s.amenageur, co.nomcommune;
 ```
 
 ## Donner les droits
-
+Le possesseur de commune doit donner les droits de sélectionner cette table aux autres utilisateurs pour qu'ils puissent créer des vues à partir celle-ci. Le grant option leur permet de donner le droit de sélectionner leurs vues à l'étudiant qui crée la vue global. 
 ```sql
 /* i2a06b */
 grant select on commune to i2a02a with grant option;
 grant select on commune to i2a04a with grant option;
 grant select on commune to i2a02b with grant option;
+```
 
+```sql
 /* i2a04a */
 grant select on station to i2a02a with grant option;
 grant select on station to i2a06b with grant option;
 grant select on station to i2a02b with grant option;
 grant select on VVendee to i2a06b with grant option;
-
+```
+Les possesseurs de VSarthe et VMaine doivent donner les droits de sélectionner leur vue respective à l'utilisateur qui crée la vue globale. 
+```sql
 /* i2a02a */
 grant select on VSarthe to i2a06b with grant option;
 
