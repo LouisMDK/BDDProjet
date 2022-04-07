@@ -105,9 +105,12 @@ La seule contrainte d'intégrité en local à ajouter est la clé primaire, le c
 ```sql
 alter table departement add constraint Departement_PK primary key (numdep);
 ```
-
+### Contraintes d'intégrité distantes
+Il n'y a pas de contraintes d'intégrité distantes dans la table departement. 
 ### Donner les droits
+On donne les droits de sélectionner la table departement aux autres utilisateurs.
 
+On donne également le droit de réferencer l'attribut numdep au possesseur de la table commune pour relier les communes à un département. 
 ```sql
 grant select on departement to i2a07a;
 grant select on departement to i2a02b;
@@ -122,12 +125,33 @@ GRANT REFERENCES(numdep) ON departement to i2a06b;
 ### Contraintes d'intégrité distantes
 ### Donner les droits
 
-## Table Intervenant
-### Création de la table
-### Contraintes d'intégrité en local
-### Contraintes d'intégrité distantes
-### Donner les droits
 
+## Table Intervenant
+La table intervenant liste tous les aménageurs avec les opérateurs et l'enseigne. 
+Chaque aménageur possède toujours le même opérateur avec la même enseigne.
+### Création de la table
+```sql
+create table intervenant as
+select distinct aménageur as amenageur, enseigne as enseigne, opérateur as operateur from recharge;
+```
+### Contraintes d'intégrité en local
+La seule contrainte d'intégrité en local de la table intervenant est la clé primaire, amenageur. 
+```sql
+alter table intervenant add constraint Intervant_PK primary key (amenageur);
+```
+### Contraintes d'intégrité distantes
+Il n'y a pas de contraintes d'intégrité distantes dans la table intervenant. 
+### Donner les droits
+On donne les droits aux autres utilisateurs de select sur la table intervenant.
+
+On donne également le droit de référencer l'attribut amenageur au possesseur de la table station, nécessaire pour donner l'aménageur de chaque station électrique. 
+```sql
+GRANT SELECT ON INTERVENANT TO i2a06b;
+GRANT SELECT ON INTERVENANT TO i2a07a;
+GRANT SELECT ON INTERVENANT TO i2a02a;
+GRANT SELECT ON INTERVENANT TO I2A04A;
+GRANT REFERENCES(amenageur) ON INTERVENANT TO I2A04A;
+```
 ## Requêtes
 
 ### Affichez pour chaque Aménageur le nombre de prises par département. 
