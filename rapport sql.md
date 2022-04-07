@@ -119,11 +119,13 @@ GRANT REFERENCES(numdep) ON departement to i2a06b;
 ## Table Station
 ### Création de la table
 ### Contraintes d'intégrité en local
+### Contraintes d'intégrité distantes
 ### Donner les droits
 
 ## Table Intervenant
 ### Création de la table
 ### Contraintes d'intégrité en local
+### Contraintes d'intégrité distantes
 ### Donner les droits
 
 ## Requêtes
