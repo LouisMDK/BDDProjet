@@ -300,14 +300,14 @@ group by s.amenageur, co.nomcommune;
 ```
 
 ## Donner les droits
-Le possesseur de commune doit donner les droits de sélectionner cette table aux autres utilisateurs pour qu'ils puissent créer des vues à partir celle-ci. Le grant option leur permet de donner le droit de sélectionner leurs vues à l'étudiant qui crée la vue global. 
+Le possesseur de commune doit donner les droits de sélectionner cette table aux autres utilisateurs pour qu'ils puissent créer des vues de commune. Le grant option leur permet de donner le droit de sélectionner leurs vues à l'étudiant qui crée la vue global. 
 ```sql
 /* i2a06b */
 grant select on commune to i2a02a with grant option;
 grant select on commune to i2a04a with grant option;
 grant select on commune to i2a02b with grant option;
 ```
-
+Le possesseur de station donne les doits de sélectionner sa table avec grant option pour que les autres utilisateurs créent des vues et donnent le droit de la sélectionner. 
 ```sql
 /* i2a04a */
 grant select on station to i2a02a with grant option;
@@ -324,8 +324,8 @@ grant select on VSarthe to i2a06b with grant option;
 grant select on VMaine to i2a06b with grant option;
 ```
 
-### Créer la dernière vue
-
+### Créer la vue globale
+Pour faire la vue globale, on fait l'union de la vue des différents utilisateurs. Les droits sont déjà donnés ; on obtient la liste du nombre de points de charge par aménageur par commune. 
 ```sql
 create or replace view VPaysLoire as
 select * from i2a06b.VLA
@@ -340,7 +340,7 @@ select * from i2a04a.VVendee;
 ```
 
 ### Donner les droits
-
+On donne les droits de sélectionner la vue globale aux autres utilisateurs afin de consulter les données. 
 ```sql
 grant select on VPaysLoire to i2a02a;
 grant select on VPaysLoire to i2a04a;
