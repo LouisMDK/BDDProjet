@@ -139,6 +139,9 @@ ALTER TABLE STATION ADD CONSTRAINT INSEEFK FOREIGN KEY(INSEE) REFERENCES I2A06B.
 ALTER TABLE STATION ADD CONSTRAINT AMENAGEURFK FOREIGN KEY(AMENAGEUR) REFERENCES I2A02B.INTERVENANT(AMENAGEUR);
 ```
 ### Donner les droits
+On donne les droits de sélectionner la table station aux autres utilisateurs. 
+
+Le "with grant option" leur permet de donner le droit de sélectionner sur des vues qu'ils ont créé à partir de la table station. 
 ```sql
 GRANT SELECT ON STATION TO I2A06B WITH GRANT OPTION; 
 GRANT SELECT ON STATION TO I2A07A WITH GRANT OPTION; 
