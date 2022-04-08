@@ -1,4 +1,6 @@
 # Rapport mini projet SQL
+Groupe 1-1 
+
 identifiants Oracle :
 
 - Louis : i2a06b
@@ -193,24 +195,40 @@ from i2a04a.station s, i2a06b.commune co
 where s.insee = co.insee
     and co.numdep = 72
 group by s.amenageur, co.nomcommune;
+```
+![](./req1.png)
+Il convient de noter qu'IONITY possède presque deux fois plus de stations que l'aménageur SABLE SUR SARTHE. Ce dernier est présent uniquement dans la commune du même nom, et seulement 3 communes dans la Sarthe sur les 354 possèdent des stations de recharge électrique. 
+```sql
 /* Maine-et-Loire 49 */
 select s.amenageur, co.nomcommune, sum(s.nbpointsdecharge) as nbpointsdecharge
 from i2a04a.station s, i2a06b.commune co
 where s.insee = co.insee
     and co.numdep = 49
 group by s.amenageur, co.nomcommune;
+```
+![](./req2.png)
+Le seul aménageur en Maine-et-Loire est IONITY et est développé sur deux communes. 
+```sql
 /* Vendée 85 */
 select s.amenageur, co.nomcommune, sum(s.nbpointsdecharge) as nbpointsdecharge
 from i2a04a.station s, i2a06b.commune co
 where s.insee = co.insee
     and co.numdep = 85
 group by s.amenageur, co.nomcommune;
+```
+![](./req3.png)
+Le seul aménageur en Vendée est SYDEV85. Il est présent sur 10 communes et plus particulièrement Fontenay-le-Comte.
+```sql
 /* Loire-Atlantique 44 */
 select s.amenageur, co.nomcommune, sum(s.nbpointsdecharge) as nbpointsdecharge
 from i2a04a.station s, i2a06b.commune co
 where s.insee = co.insee
     and co.numdep = 44
 group by s.amenageur, co.nomcommune;
+```
+![](./req4.png)
+Le seul aménageur en Loire-Atlantique est Syndicat Départemental d'Energie de Loire-Atlantique (SYDELA) et possède 27 prises. 
+```sql
 /* Mayenne 53 */
 select s.amenageur, co.nomcommune, sum(s.nbpointsdecharge) as nbpointsdecharge
 from i2a04a.station s, i2a06b.commune co
@@ -218,6 +236,8 @@ where s.insee = co.insee
     and co.numdep = 53
 group by s.amenageur, co.nomcommune;
 ```
+![](./req5.png)
+Il y a trois aménageurs en Mayenne : IONITY, LM - Laval St Berthevin (magasin 198) et SAINT CYR. Ce dernier ne possède aucune prise malgré avoir une station inscrite dans la base de données. 
 ### Afficher pour chaque Aménageur le nombre de prises avec la puissance Max 
 ```sql
 select inter.amenageur,
