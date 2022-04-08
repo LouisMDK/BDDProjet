@@ -188,6 +188,7 @@ GRANT REFERENCES(amenageur) ON INTERVENANT TO I2A04A;
 ## Requêtes
 
 ### Affichez pour chaque Aménageur le nombre de prises par département. 
+Les graphiques générées contiennent uniquement les 10 premières lignes du résultat de la requête par soucis de lisibilité. 
 ```sql
 /* Sarthe 72 */
 select s.amenageur, co.nomcommune, sum(s.nbpointsdecharge) as nbpointsdecharge
@@ -197,6 +198,7 @@ where s.insee = co.insee
 group by s.amenageur, co.nomcommune;
 ```
 ![](./req1.png)
+
 Il convient de noter qu'IONITY possède presque deux fois plus de stations que l'aménageur SABLE SUR SARTHE. Ce dernier est présent uniquement dans la commune du même nom, et seulement 3 communes dans la Sarthe sur les 354 possèdent des stations de recharge électrique. 
 ```sql
 /* Maine-et-Loire 49 */
@@ -207,6 +209,7 @@ where s.insee = co.insee
 group by s.amenageur, co.nomcommune;
 ```
 ![](./req2.png)
+
 Le seul aménageur en Maine-et-Loire est IONITY et est développé sur deux communes. 
 ```sql
 /* Vendée 85 */
@@ -217,6 +220,7 @@ where s.insee = co.insee
 group by s.amenageur, co.nomcommune;
 ```
 ![](./req3.png)
+
 Le seul aménageur en Vendée est SYDEV85. Il est présent sur 10 communes et plus particulièrement Fontenay-le-Comte.
 ```sql
 /* Loire-Atlantique 44 */
@@ -227,6 +231,7 @@ where s.insee = co.insee
 group by s.amenageur, co.nomcommune;
 ```
 ![](./req4.png)
+
 Le seul aménageur en Loire-Atlantique est Syndicat Départemental d'Energie de Loire-Atlantique (SYDELA) et possède 27 prises. 
 ```sql
 /* Mayenne 53 */
@@ -237,6 +242,7 @@ where s.insee = co.insee
 group by s.amenageur, co.nomcommune;
 ```
 ![](./req5.png)
+
 Il y a trois aménageurs en Mayenne : IONITY, LM - Laval St Berthevin (magasin 198) et SAINT CYR. Ce dernier ne possède aucune prise malgré avoir une station inscrite dans la base de données. 
 ### Afficher pour chaque Aménageur le nombre de prises avec la puissance Max 
 ```sql
@@ -245,6 +251,9 @@ select inter.amenageur,
     (select max(puissancemaximum) from i2a04a.station s where s.amenageur = inter.amenageur) as puissancemaximum
 from i2a02b.intervenant inter;
 ```
+![](./req6.png)
+
+On observe que l'aménageur ayant la puissance maximale de prise la plus élevée est IONITY mais ne possède qu'environ 50 prises. Les aménageurs ayant le plus de prises sont SYDELA et SYDEV85 (respectivement plus de 350V et 200V), néanmoins la puissance maximale de leur prise est de 50V.
 ### Affichez pour chaque département la répartition des prises. 
 ```sql
 select dep.nomdep,
@@ -253,6 +262,10 @@ select dep.nomdep,
         where s.insee IN (select c.insee from i2a06b.commune c where c.numdep = dep.numdep)) as nbpointsdecharge
 from i2a02a.departement dep;
 ```
+![](./req7.png)
+
+On observe que les départements possédant le plus de points de charge est la Loire-Atlantique et la Vendée (respectivement 400 et plus de 200). Les départements Maine-et-Loire, Mayenne et Sarthe possèdent tous les trois moins de 50 points de charge. 
+
 ## Proposez 2 autres types de requêtes 
 
 ### Pour chaque aménageur, donner la station mise à jour la plus récemment
@@ -269,6 +282,7 @@ select inter.amenageur,
 from i2a02b.intervenant inter) t1, i2a04a.station s
 where t1.codestation = s.codestation;
 ```
+Etant donné la nature de la requête, il ne semble pas judicieux de générer un graphique (les données ne sont pas quantitatives). 
 
 ### Pour chaque commune, donner le nombre de points de charge gratuits
 ```sql
@@ -277,6 +291,9 @@ select co.nomcommune,
 from i2a06b.commune co
 order by 1;
 ```
+![](./req9.png)
+
+On observe qu'il n'y a que 6 stations gratuites dans les Pays de la Loire dont 2 à Nantes. 
 
 ## Synthèse 
 ### Créer les vues
@@ -366,3 +383,9 @@ grant select on VPaysLoire to i2a02a;
 grant select on VPaysLoire to i2a04a;
 grant select on VPaysLoire to i2a02b;
 ```
+
+## A partir de ces Vues, vous donnez les différents graphiques.
+
+![](./req10.png)
+
+Ceci est un échantillon (10 premières lignes du résultat de la requête uniquement). L'aménageur présent sur le plus de communes dans cet échantillon est IONITY et possède le monopole de Longué-jumelles, Bonchamp-lès-Laval, Parcé-sur-Sarthe et Saint-Hermine.  
